@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { atomCounts, molarMass, parseFormula, totalAtoms } from "@/lib/questions/generators/chemistry";
+import { fixLatex, stripLead, stripNumbering } from "@/lib/ai/clean";
 import { plainMath } from "@/lib/plain";
 import { dec, simplify, texFrac } from "@/lib/questions/fmt";
 import { createRng } from "@/lib/questions/rng";
@@ -55,6 +56,25 @@ describe("plain-text maths for accessible names", () => {
     expect(plainMath("$\\sin 30^\\circ$")).toBe("sin 30°");
     expect(plainMath("$\\mathrm{H_2SO_4}$")).toBe("H2SO4");
     expect(plainMath("₹20")).toBe("₹20");
+  });
+});
+
+describe("repairing LaTeX from AI output", () => {
+  it("restores backslashes that JSON decoding turned into control characters", () => {
+    expect(fixLatex("$3 \times 4$")).toBe("$3 \\times 4$");
+    expect(fixLatex("$\frac{1}{2}$")).toBe("$\\frac{1}{2}$");
+    expect(fixLatex("$\theta$ and $\rho$")).toBe("$\\theta$ and $\\rho$");
+    expect(fixLatex("$a \neq b$")).toBe("$a \\neq b$");
+  });
+  it("keeps real newlines and turns stray LaTeX outside maths into plain symbols", () => {
+    expect(fixLatex("First paragraph.\n\nSecond.")).toBe("First paragraph.\n\nSecond.");
+    expect(fixLatex("The AP 2, 5, 8, \\dots")).toBe("The AP 2, 5, 8, …");
+    expect(fixLatex("Use 3 \\times 4 here, and $\\times$ there")).toBe("Use 3 × 4 here, and $\\times$ there");
+  });
+  it("tidies numbered steps and repeated labels", () => {
+    expect(stripNumbering("1. Identify a")).toBe("Identify a");
+    expect(stripNumbering("Step 2: Use the formula")).toBe("Use the formula");
+    expect(stripLead("Remember: add d each time", "Remember:")).toBe("add d each time");
   });
 });
 

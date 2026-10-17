@@ -25,7 +25,12 @@ export function CheckRunner() {
   const router = useRouter();
   const [problem, setProblem] = useState<{ skillId: string; message: string } | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
+  const [bump, setBump] = useState(0);
   const inflight = useRef<string | null>(null);
+  const prefetching = useRef<string | null>(null);
+  const tried = useRef(new Set<string>());
+  const lastAiCall = useRef(0);
+  const prefetchStopped = useRef(false);
 
   // What should happen next is a pure function of the stored session.
   const next = useMemo(() => (session && !session.pending ? advance(session) : null), [session]);
@@ -44,7 +49,8 @@ export function CheckRunner() {
     if (!next) return;
     if (next.kind === "question") return sessionStore.set(next.session);
     if (next.kind === "done") return finish(next.report);
-    if (problem || inflight.current === next.skillId) return;
+    // Wait for a background prefetch of this skill rather than asking twice.
+    if (problem || inflight.current === next.skillId || prefetching.current === next.skillId) return;
     const skill = next.session.graph.nodes[next.skillId];
     inflight.current = skill.id;
     fetchQuestions(skill, next.session.title)
@@ -59,8 +65,42 @@ export function CheckRunner() {
       .catch((e: Error) => setProblem({ skillId: skill.id, message: e.message }))
       .finally(() => {
         inflight.current = null;
+        lastAiCall.current = Date.now();
+        setBump((b) => b + 1);
       });
-  }, [next, problem, finish]);
+  }, [next, problem, finish, bump]);
+
+  // While the student answers, quietly fetch questions for the other AI-made skills, one at a time
+  // and spaced out to stay within the free AI quota, so they're ready if the check-up gets there.
+  // Each skill is prefetched at most once; after any failure the on-demand path takes over.
+  useEffect(() => {
+    if (!session || prefetchStopped.current || inflight.current || prefetching.current || next?.kind === "needs-questions") return;
+    const depth = indexOf(session.graph).depth;
+    const skill = Object.values(session.graph.nodes)
+      .filter((n) => n.generated && !session.aiPools[n.id]?.length && !tried.current.has(n.id) && session.engine.status[n.id] === "untested")
+      .sort((a, b) => (depth[a.id] ?? 99) - (depth[b.id] ?? 99))[0];
+    if (!skill) return;
+    const wait = lastAiCall.current + 8000 - Date.now();
+    if (wait > 0) {
+      const timer = setTimeout(() => setBump((b) => b + 1), wait);
+      return () => clearTimeout(timer);
+    }
+    tried.current.add(skill.id);
+    prefetching.current = skill.id;
+    fetchQuestions(skill, session.title)
+      .then((questions) => {
+        const latest = sessionStore.get();
+        if (latest && !latest.aiPools[skill.id]?.length) sessionStore.set({ ...latest, aiPools: { ...latest.aiPools, [skill.id]: questions } });
+      })
+      .catch(() => {
+        prefetchStopped.current = true;
+      })
+      .finally(() => {
+        prefetching.current = null;
+        lastAiCall.current = Date.now();
+        setBump((b) => b + 1);
+      });
+  }, [session, next, bump]);
 
   // Each new question starts at the top, so the progress bar and the trail stay in view.
   const pendingId = session?.pending?.question.id;

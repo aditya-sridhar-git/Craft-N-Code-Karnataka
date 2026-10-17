@@ -2,6 +2,15 @@ import type { NodeStatus, Why } from "@/lib/engine/diagnose";
 import type { Skill } from "@/lib/types";
 
 const title = (nodes: Record<string, Skill>, id: string) => nodes[id]?.title ?? id;
+
+const PROPER = /^(Ohm|Pythagoras|Newton|Avogadro|Kirchhoff|Coulomb|Archimedes|Faraday|Hooke|Boyle|Charles)\b/;
+
+/** A title for use mid-sentence: lowercase first letter, but keep acronyms (AP, BODMAS) and names (Ohm's law). */
+export function inSentence(text: string) {
+  const first = text.split(/\s/)[0] ?? "";
+  if (/^[A-Z0-9]{2,}/.test(first) || PROPER.test(text)) return text;
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 /** One plain sentence saying why this question is being asked. */

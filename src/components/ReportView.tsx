@@ -7,7 +7,7 @@ import type { DiagnosticGraph } from "@/lib/engine/graph";
 import type { AskedQuestion, PlanStep } from "@/lib/session";
 import { encodeReport } from "@/lib/share";
 import type { Subject } from "@/lib/types";
-import { CONFIDENCE, displayStatus, formatDate, STATUS } from "@/lib/words";
+import { CONFIDENCE, displayStatus, formatDate, inSentence, STATUS } from "@/lib/words";
 import { MathText } from "./MathText";
 import { RootTree, TreeLegend, TreeList } from "./RootTree";
 
@@ -40,7 +40,7 @@ function summaryText(p: ReportViewProps) {
   for (const r of p.result.roots) {
     const s = t[r.skillId];
     const mis = r.misconceptions[0] ? s.misconceptions.find((m) => m.id === r.misconceptions[0].id) : null;
-    lines.push(`Root gap: ${s.title} (Class ${s.grade}). ${r.total - r.correct} of ${r.total} answers missed${mis ? `; common mix-up: ${mis.label.toLowerCase()}` : ""}.`);
+    lines.push(`Root gap: ${s.title} (Class ${s.grade}). ${r.total - r.correct} of ${r.total} answers missed${mis ? `; common mix-up: ${inSentence(mis.label)}` : ""}.`);
     lines.push(`Chain: ${r.path.map((id) => t[id].short).join(" → ")}`);
   }
   const solid = Object.keys(t).filter((id) => p.result.status[id] === "mastered").map((id) => t[id].short);
@@ -111,7 +111,7 @@ export function ReportView(props: ReportViewProps) {
               </p>
               <p className="mt-4 max-w-2xl text-lg leading-relaxed">
                 You were stuck on <strong>{target.title}</strong>. Your answers trace the trouble back to{" "}
-                <strong>{nodes[main.skillId].title.toLowerCase()}</strong>, which {target.title.toLowerCase()} is built on.
+                <strong>{inSentence(nodes[main.skillId].title)}</strong>, which {inSentence(target.title)} is built on.
               </p>
             </>
           )}
@@ -135,7 +135,7 @@ export function ReportView(props: ReportViewProps) {
             <div className="rounded-2xl bg-surface-2 p-4">
               <p className="text-sm font-semibold text-muted">Evidence</p>
               <p className="mt-1">
-                {main.correct} of {main.total} right on {nodes[main.skillId].short.toLowerCase()}
+                {main.correct} of {main.total} right on {inSentence(nodes[main.skillId].short)}
                 {main.unsure > 0 && `, with ${main.unsure} "not sure"`}. {affected.length > 0 && `${affected.length} skill${affected.length === 1 ? "" : "s"} built on it ${affected.length === 1 ? "is" : "are"} affected too.`}
               </p>
             </div>
@@ -154,7 +154,7 @@ export function ReportView(props: ReportViewProps) {
             return (
               <div className="mt-4 rounded-2xl border border-sun bg-sun-soft p-4">
                 <p className="font-semibold">
-                  Your answers match a common mix-up: <MathText text={mis.label.charAt(0).toLowerCase() + mis.label.slice(1)} />
+                  Your answers match a common mix-up: <MathText text={inSentence(mis.label)} />
                   {top.count > 1 && ` (${top.count} times)`}.
                 </p>
                 <MathText as="p" text={mis.fix} className="mt-2 leading-relaxed" />
@@ -167,7 +167,7 @@ export function ReportView(props: ReportViewProps) {
               <Link href={`/repair?id=${reportId}&skill=${main.skillId}`} className="rounded-xl bg-leaf px-6 py-3 text-lg font-semibold text-leaf-ink hover:opacity-95">
                 Fix this root now
               </Link>
-              <span className="text-sm text-muted">About 10 minutes: a short lesson, a worked example and practice, then climb back up to {target.short.toLowerCase()}.</span>
+              <span className="text-sm text-muted">About 10 minutes: a short lesson, a worked example and practice, then climb back up to {inSentence(target.short)}.</span>
             </div>
           )}
 
@@ -199,7 +199,7 @@ export function ReportView(props: ReportViewProps) {
           </h2>
           <p className="mt-3 max-w-2xl text-lg leading-relaxed">
             {result.targetMastered
-              ? `You got the check questions on ${target.title.toLowerCase()} right, so the foundations look fine. If you still feel stuck, the trouble may be with longer exam-style problems or speed rather than a missing skill.`
+              ? `You got the check questions on ${inSentence(target.title)} right, so the foundations look fine. If you still feel stuck, the trouble may be with longer exam-style problems or speed rather than a missing skill.`
               : "The check ended before there were enough answers. Try again and answer a few more questions; it usually takes 10 to 16."}
           </p>
           {!shared && (

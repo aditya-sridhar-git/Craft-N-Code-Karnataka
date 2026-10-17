@@ -8,6 +8,7 @@ import { buildSubgraph } from "@/lib/engine/graph";
 import { featuredSession, graphFromNodes, newSession, sessionStore, type PlanStep } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import type { Skill, Subject } from "@/lib/types";
+import { inSentence } from "@/lib/words";
 
 const SUBJECT: Record<Subject, { label: string; className: string }> = {
   maths: { label: "Maths", className: "bg-leaf-soft text-leaf" },
@@ -192,7 +193,7 @@ export function StartForm() {
                     <span key={t.id}>
                       {i > 0 && " · "}
                       <button type="button" className="underline underline-offset-2" onClick={() => setText(t.sampleProblem)}>
-                        {t.title.toLowerCase()}
+                        {inSentence(t.title)}
                       </button>
                     </span>
                   ))}

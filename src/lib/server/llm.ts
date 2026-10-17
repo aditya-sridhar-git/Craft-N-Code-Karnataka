@@ -14,10 +14,13 @@ const list = (value: string | undefined, fallback: string[]) =>
         .filter(Boolean)
     : fallback;
 
-/** Fallback chains: each model has its own free-tier rate limit, so a 429 moves on to the next. */
+/**
+ * Fallback chains. On Groq's free tier each model has its own limit (8,000 tokens a minute,
+ * 1,000 requests a day), so a 429 on one model moves on to the next.
+ */
 export const CHAINS = {
-  generate: () => list(process.env.GROQ_GENERATE_MODELS, ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"]),
-  verify: () => list(process.env.GROQ_VERIFY_MODELS, ["qwen/qwen3.8-27b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"]),
+  generate: () => list(process.env.GROQ_GENERATE_MODELS, ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"]),
+  verify: () => list(process.env.GROQ_VERIFY_MODELS, ["qwen/qwen3.8-27b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"]),
 };
 
 export const isMock = () => process.env.LLM_MOCK === "1";
@@ -79,8 +82,25 @@ export interface JsonCall<T> {
  */
 export async function generateJSON<T>(call: JsonCall<T>): Promise<{ data: T; model: string }> {
   if (!process.env.GROQ_API_KEY) throw new AiError("AI isn't switched on for this copy of Taproot.");
+  const started = Date.now();
+  const first = await tryChain(call);
+  if ("data" in first) return first;
+  // Every model was busy. Free-tier token limits refill continuously, so wait the few seconds
+  // Groq asks for (retry-after) and go round the chain once more.
+  if (first.retryAfter !== null && Date.now() - started < 30_000) {
+    await new Promise((r) => setTimeout(r, Math.min(12, Math.max(1, first.retryAfter!)) * 1000));
+    const second = await tryChain(call);
+    if ("data" in second) return second;
+    first.failures.push(...second.failures);
+  }
+  console.warn(JSON.stringify({ ai: call.task, failed: first.failures }));
+  throw new AiError("The AI service is busy right now. Please try again in a minute.");
+}
+
+async function tryChain<T>(call: JsonCall<T>): Promise<{ data: T; model: string } | { failures: string[]; retryAfter: number | null }> {
   const schema = toStrictSchema(call.schema);
   const failures: string[] = [];
+  let retryAfter: number | null = null;
   for (const model of call.chain) {
     const started = Date.now();
     const strict = STRICT.has(model);
@@ -114,10 +134,14 @@ export async function generateJSON<T>(call: JsonCall<T>): Promise<{ data: T; mod
       return { data: parsed.data, model };
     } catch (e) {
       if (e instanceof Groq.AuthenticationError) throw new AiError("The AI service rejected the API key.");
+      if (e instanceof Groq.RateLimitError) {
+        const wait = Number(e.headers?.get("retry-after"));
+        if (Number.isFinite(wait)) retryAfter = retryAfter === null ? wait : Math.min(retryAfter, wait);
+        else retryAfter ??= 5;
+      }
       // Rate limits (429), timeouts, server errors and retired models all move on to the next model.
       failures.push(`${model}: ${describe(e)}`);
     }
   }
-  console.warn(JSON.stringify({ ai: call.task, failed: failures }));
-  throw new AiError("The AI service is busy right now. Please try again in a minute.");
+  return { failures, retryAfter };
 }

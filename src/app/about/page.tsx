@@ -149,7 +149,7 @@ export default function AboutPage() {
           </li>
         </ul>
         <p className={P}>
-          The AI runs on open-weight models hosted by Groq: OpenAI&apos;s gpt-oss models, Qwen and Llama, with automatic fallback between them if one is busy.
+          The AI runs on open-weight models hosted by Groq: OpenAI&apos;s gpt-oss-120b writes, and Alibaba&apos;s Qwen 3.8 (a different model family) checks. If one is busy, Taproot falls back to the other or to gpt-oss-20b.
         </p>
       </section>
 

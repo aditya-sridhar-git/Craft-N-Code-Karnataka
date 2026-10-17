@@ -12,6 +12,7 @@ import { createRng, freshSeed } from "@/lib/questions/rng";
 import { featuredSession, newSession, reportsStore, saveReport, sessionStore, type Report } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import type { Question, Skill } from "@/lib/types";
+import { inSentence } from "@/lib/words";
 
 interface Lesson {
   title: string;
@@ -182,7 +183,7 @@ export function RepairFlow() {
   return (
     <div className="mx-auto max-w-2xl">
       <p className="text-sm font-semibold tracking-wide text-soil uppercase">Repair and climb</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight">From {report.graph.nodes[path[0]].short.toLowerCase()} back up to {target.short.toLowerCase()}</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight">From {inSentence(report.graph.nodes[path[0]].short)} back up to {inSentence(target.short)}</h1>
 
       <ol aria-label="Your climb" className="mt-5 flex flex-wrap items-center gap-2">
         {path.map((id, i) => {
@@ -243,7 +244,7 @@ export function RepairFlow() {
                 <p className="mt-3 text-xs text-muted">{lesson.source === "ai" ? "Explanation written by AI for your answers. If anything looks wrong, trust your textbook." : "From Taproot's checked lessons."}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   <button type="button" disabled={loading} onClick={isRoot ? showExample : startPractice} className="rounded-xl bg-leaf px-5 py-3 font-semibold text-leaf-ink disabled:opacity-60">
-                    {loading ? "Getting it ready…" : isRoot ? "Show me an example" : `Practise ${skill.short.toLowerCase()}`}
+                    {loading ? "Getting it ready…" : isRoot ? "Show me an example" : `Practise ${inSentence(skill.short)}`}
                   </button>
                 </div>
               </>
@@ -312,7 +313,7 @@ export function RepairFlow() {
                   {step.correct} of {step.total}. {isRoot ? "Root repaired!" : "Solid!"}
                 </p>
                 <p className="mt-2 text-muted">
-                  {stage + 1 < path.length ? `Next, climb up to ${report.graph.nodes[path[stage + 1]].title.toLowerCase()}.` : `That's the top: you're back at ${target.title.toLowerCase()}.`}
+                  {stage + 1 < path.length ? `Next, climb up to ${inSentence(report.graph.nodes[path[stage + 1]].title)}.` : `That's the top: you're back at ${inSentence(target.title)}.`}
                 </p>
               </>
             ) : (
@@ -367,13 +368,13 @@ export function RepairFlow() {
             <p className="text-5xl" aria-hidden="true">
               🌱
             </p>
-            <h2 className="mt-2 font-display text-3xl font-semibold">You climbed back up to {target.title.toLowerCase()}</h2>
+            <h2 className="mt-2 font-display text-3xl font-semibold">You climbed back up to {inSentence(target.title)}</h2>
             <p className="mx-auto mt-3 max-w-lg text-muted">
               The root is repaired and every skill above it held. Run a fresh check-up in about three days to make sure it has stuck, or now if you&apos;d like to see the difference.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               <button type="button" onClick={checkAgain} className="rounded-xl bg-leaf px-5 py-3 font-semibold text-leaf-ink">
-                Check {target.short.toLowerCase()} again
+                Check {inSentence(target.short)} again
               </button>
               <Link href={`/report?id=${report.id}`} className="rounded-xl border border-line px-5 py-3 font-semibold">
                 Back to the report
