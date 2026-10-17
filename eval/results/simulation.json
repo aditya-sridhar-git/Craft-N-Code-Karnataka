@@ -1,8 +1,52 @@
 {
   "seed": 2026,
   "studentsPerTopic": 2000,
+  "topics": 5,
   "slip": 0.1,
   "unsure": 0.4,
+  "budget": 20,
+  "overall": {
+    "split": {
+      "students": 10000,
+      "exactRootMatch": 0.8234,
+      "firstRootReal": 0.8544950055493896,
+      "rootRecall": 0.8451165371809101,
+      "rootPrecision": 0.8789107763615296,
+      "falseAlarm": 0.010101010101010102,
+      "avgQuestions": 13.7938,
+      "p90Questions": 20
+    },
+    "topdown": {
+      "students": 10000,
+      "exactRootMatch": 0.7256,
+      "firstRootReal": 0.7485016648168702,
+      "rootRecall": 0.7385127635960045,
+      "rootPrecision": 0.7660219399538106,
+      "falseAlarm": 0.005050505050505051,
+      "avgQuestions": 14.1754,
+      "p90Questions": 20
+    },
+    "exhaustive": {
+      "students": 10000,
+      "exactRootMatch": 0.7771,
+      "firstRootReal": 0.9135405105438402,
+      "rootRecall": 0.9401220865704772,
+      "rootPrecision": 0.8470177734162031,
+      "falseAlarm": 0.17676767676767677,
+      "avgQuestions": 35.4589,
+      "p90Questions": 52
+    },
+    "chapter-test": {
+      "students": 10000,
+      "exactRootMatch": 0.1405,
+      "firstRootReal": 0.04716981132075472,
+      "rootRecall": 0.04716981132075472,
+      "rootPrecision": 0.04885057471264368,
+      "falseAlarm": 0.010101010101010102,
+      "avgQuestions": 5,
+      "p90Questions": 5
+    }
+  },
   "results": {
     "projectile-motion": {
       "split": {

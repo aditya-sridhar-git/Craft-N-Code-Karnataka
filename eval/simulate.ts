@@ -218,6 +218,27 @@ const json = Object.fromEntries(
     ),
   ]),
 );
-writeFileSync("eval/results/simulation.json", JSON.stringify({ seed: SEED, studentsPerTopic: STUDENTS, slip: SLIP, unsure: UNSURE, results: json }, null, 2));
+const overallJson = Object.fromEntries(
+  METHODS.map((m) => {
+    const t = merge(Object.values(main).map((r) => r[m]));
+    return [
+      m,
+      {
+        students: t.n,
+        exactRootMatch: t.exact / t.n,
+        firstRootReal: t.top / Math.max(1, t.withGap),
+        rootRecall: t.recallSum / Math.max(1, t.withGap),
+        rootPrecision: t.precisionSum / Math.max(1, t.predicted),
+        falseAlarm: t.falseAlarm / Math.max(1, t.noGap),
+        avgQuestions: mean(t.questions),
+        p90Questions: p90(t.questions),
+      },
+    ];
+  }),
+);
+writeFileSync(
+  "eval/results/simulation.json",
+  JSON.stringify({ seed: SEED, studentsPerTopic: STUDENTS, topics: FEATURED.length, slip: SLIP, unsure: UNSURE, budget: DEFAULT_BUDGET, overall: overallJson, results: json }, null, 2),
+);
 console.log(table(overall(main, METHODS)));
 console.log(`\nWrote eval/results/simulation.md (${((Date.now() - started) / 1000).toFixed(1)} s)`);

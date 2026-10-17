@@ -1,26 +1,192 @@
 @import "tailwindcss";
 
+/* ── Colour tokens ───────────────────────────────────────────────────────────
+   Paper, leaf and soil. Status colours are never the only signal: every status
+   also has an icon and a text label. Text colours meet WCAG AA on --paper and --surface. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #fbf8f1;
+  --surface: #ffffff;
+  --surface-2: #f3eee3;
+  --ink: #1d2721;
+  --muted: #56615a;
+  --line: #e2dacb;
+  --leaf: #2f6b4f;
+  --leaf-ink: #ffffff;
+  --leaf-soft: #e3efe7;
+  --soil: #7a5235;
+  --soil-soft: #f3e8dc;
+  --sun: #d99a2b;
+  --sun-ink: #855610;
+  --sun-soft: #fbefd7;
+  --gap: #b3372b;
+  --gap-soft: #fbe6e3;
+  --affected: #a85a08;
+  --affected-soft: #fdf0e1;
+  --ok: #2b7549;
+  --ok-soft: #e2f1e8;
+  --focus: #1a5fb4;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --paper: #121815;
+    --surface: #1a221d;
+    --surface-2: #222c26;
+    --ink: #e7ece8;
+    --muted: #a6b0a9;
+    --line: #34403a;
+    --leaf: #82c9a1;
+    --leaf-ink: #0e1a13;
+    --leaf-soft: #1f3529;
+    --soil: #cfa47a;
+    --soil-soft: #2e251c;
+    --sun: #f0b45a;
+    --sun-ink: #f3c27a;
+    --sun-soft: #33281a;
+    --gap: #f2948a;
+    --gap-soft: #3a201d;
+    --affected: #f0ab62;
+    --affected-soft: #36281a;
+    --ok: #8bd5a8;
+    --ok-soft: #1c3326;
+    --focus: #8ab4ff;
+    color-scheme: dark;
   }
 }
 
+:root[data-theme="dark"] {
+  --paper: #121815;
+  --surface: #1a221d;
+  --surface-2: #222c26;
+  --ink: #e7ece8;
+  --muted: #a6b0a9;
+  --line: #34403a;
+  --leaf: #82c9a1;
+  --leaf-ink: #0e1a13;
+  --leaf-soft: #1f3529;
+  --soil: #cfa47a;
+  --soil-soft: #2e251c;
+  --sun: #f0b45a;
+  --sun-ink: #f3c27a;
+  --sun-soft: #33281a;
+  --gap: #f2948a;
+  --gap-soft: #3a201d;
+  --affected: #f0ab62;
+  --affected-soft: #36281a;
+  --ok: #8bd5a8;
+  --ok-soft: #1c3326;
+  --focus: #8ab4ff;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-leaf: var(--leaf);
+  --color-leaf-ink: var(--leaf-ink);
+  --color-leaf-soft: var(--leaf-soft);
+  --color-soil: var(--soil);
+  --color-soil-soft: var(--soil-soft);
+  --color-sun: var(--sun);
+  --color-sun-ink: var(--sun-ink);
+  --color-sun-soft: var(--sun-soft);
+  --color-gap: var(--gap);
+  --color-gap-soft: var(--gap-soft);
+  --color-affected: var(--affected);
+  --color-affected-soft: var(--affected-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), Georgia, serif;
+}
+
+/* ── Reading comfort settings (set from the accessibility menu) ── */
+html {
+  font-size: 100%;
+}
+html[data-text="large"] {
+  font-size: 112.5%;
+}
+html[data-text="xl"] {
+  font-size: 125%;
+}
+html[data-easy="on"] body {
+  letter-spacing: 0.03em;
+  word-spacing: 0.12em;
+  line-height: 1.8;
+}
+html[data-easy="on"] p,
+html[data-easy="on"] li {
+  max-width: 62ch;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--sun-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* KaTeX: keep inline maths the same visual size as body text. */
+.katex {
+  font-size: 1.06em;
+}
+.katex-display {
+  margin: 0.5em 0;
+}
+
+/* Gentle entrance for new questions and cards. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 260ms ease-out both;
+}
+
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .print-break {
+    break-before: page;
+  }
 }

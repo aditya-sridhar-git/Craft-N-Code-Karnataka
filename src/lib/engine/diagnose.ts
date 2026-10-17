@@ -155,7 +155,22 @@ export class Diagnoser {
     const decided = verdict(mine);
 
     if (!decided) return { ...state, answers, why: { kind: "repeat", tiebreak: mine.length >= MIN_PER_SKILL } };
+    return this.decide({ ...state, answers }, id, decided);
+  }
 
+  /**
+   * Decides the current skill from the evidence so far. Used when no more questions are
+   * available for it. Returns null if nothing has been answered on it yet.
+   */
+  settle(state: DiagnosisState): DiagnosisState | null {
+    const id = state.current;
+    if (!id) return state;
+    const mine = state.answers.filter((a) => a.skillId === id);
+    if (!mine.length) return null;
+    return this.decide(state, id, evidence(mine) >= 0 ? "mastered" : "gap");
+  }
+
+  private decide(state: DiagnosisState, id: string, decided: "mastered" | "gap"): DiagnosisState {
     const status = { ...state.status, [id]: decided };
     if (state.policy !== "exhaustive") {
       if (decided === "mastered") {
@@ -164,7 +179,7 @@ export class Diagnoser {
         for (const d of this.index.above[id]) if (status[d] === "untested") status[d] = "inferred-gap";
       }
     }
-    return { ...state, answers, status, current: null, why: null };
+    return { ...state, status, current: null, why: null };
   }
 
   /** Untested skills underneath any skill that failed (or is affected by a failure). */
