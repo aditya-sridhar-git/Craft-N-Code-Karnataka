@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import type { Question } from "@/lib/types";
+import { plainMath } from "@/lib/plain";
 import { reportIssueUrl } from "@/lib/site";
 import { MathText } from "./MathText";
 
@@ -55,7 +56,7 @@ export function QuestionCard({
     <section className="rise rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-7" aria-labelledby={promptId}>
       {label && <p className="mb-2 text-sm font-semibold text-muted">{label}</p>}
       <h2 id={promptId} ref={heading} tabIndex={-1} className="text-lg leading-relaxed font-semibold text-ink outline-none sm:text-xl">
-        <MathText text={question.prompt} />
+        <MathText text={question.prompt} display />
       </h2>
 
       <div role="group" aria-labelledby={promptId} className="mt-5 grid gap-2.5">
@@ -89,9 +90,14 @@ export function QuestionCard({
               >
                 {showRight ? "✓" : showWrong ? "✕" : LETTERS[i]}
               </span>
-              <MathText text={o.text} className="flex-1" />
-              {showRight && <span className="sr-only"> (correct answer)</span>}
-              {showWrong && <span className="sr-only"> (your answer)</span>}
+              {/* Typeset maths for the eye; a plain reading of it for screen readers and voice control. */}
+              <span aria-hidden="true" className="flex-1">
+                <MathText text={o.text} display />
+              </span>
+              <span className="sr-only">
+                {LETTERS[i]}: {plainMath(o.text)}
+                {showRight ? " (correct answer)" : showWrong ? " (your answer)" : ""}
+              </span>
             </button>
           );
         })}

@@ -75,7 +75,7 @@ export default function AboutPage() {
         <p className={P}>
           We tested the diagnosis on {studentsTotal().toLocaleString("en-IN")} simulated students across the {FEATURED.length} featured chapters. Each had 0, 1 or 2 hidden gaps, and answered realistically: {Math.round(SIM.slip * 100)}% careless slips on skills they knew, and on skills they didn&apos;t know, &quot;not sure&quot; {Math.round(SIM.unsure * 100)}% of the time and otherwise a guess among four options.
         </p>
-        <div className="mt-5 overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div tabIndex={0} role="region" aria-label="Simulation results table" className="mt-5 overflow-x-auto rounded-2xl border border-line bg-surface">
           <table className="w-full min-w-[34rem] text-left text-sm">
             <caption className="sr-only">Diagnosis accuracy in simulation</caption>
             <thead className="bg-surface-2">

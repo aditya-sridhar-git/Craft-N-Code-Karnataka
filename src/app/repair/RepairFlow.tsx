@@ -236,7 +236,7 @@ export function RepairFlow() {
                 )}
                 {lesson.tip && (
                   <p className="mt-4 rounded-xl border-l-4 border-sun bg-sun-soft p-3">
-                    <span className="font-semibold">Remember: </span>
+                    <span className="font-semibold">{lesson.source === "ai" ? "Remember: " : "In short: "}</span>
                     <MathText text={lesson.tip} />
                   </p>
                 )}
@@ -256,7 +256,7 @@ export function RepairFlow() {
             <p className="text-sm font-semibold text-muted">Step 2 · A worked example</p>
             {step.question ? (
               <>
-                <MathText as="h2" text={step.question.prompt} className="mt-2 text-lg font-semibold leading-relaxed" />
+                <MathText as="h2" text={step.question.prompt} display className="mt-2 text-lg font-semibold leading-relaxed" />
                 <p className="mt-3">
                   <span className="font-semibold">Answer: </span>
                   <MathText text={step.question.options.find((o) => o.correct)!.text} />

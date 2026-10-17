@@ -60,8 +60,17 @@ export function RootTree({
 
   const rootTitles = [...roots].map((r) => graph.nodes[r]?.title).filter(Boolean);
 
+  // The soil is painted on the container so it spans the full width, however wide the tree is.
+  const soil = `linear-gradient(to bottom, var(--surface) ${soilY - 1}px, var(--soil) ${soilY - 1}px, var(--soil) ${soilY + 1}px, var(--soil-soft) ${soilY + 1}px, color-mix(in srgb, var(--soil-soft) 30%, var(--surface)) 100%)`;
+
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+    <div
+      tabIndex={0}
+      role="region"
+      aria-label="Skill tree (scrolls sideways on small screens)"
+      className="overflow-x-auto rounded-2xl border border-line bg-surface"
+      style={{ backgroundImage: soil }}
+    >
       <svg
         role="img"
         aria-labelledby={`${titleId} ${descId}`}
@@ -74,15 +83,6 @@ export function RootTree({
         <desc id={descId}>
           {rootTitles.length ? `Root gap: ${rootTitles.join(" and ")}.` : "No root gap found."} The same information is available as a list below the tree.
         </desc>
-        <defs>
-          <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="var(--soil-soft)" stopOpacity="0.95" />
-            <stop offset="1" stopColor="var(--soil-soft)" stopOpacity="0.25" />
-          </linearGradient>
-        </defs>
-
-        <rect x={0} y={soilY} width={drawn.width} height={drawn.height - soilY} fill="url(#soil)" />
-        <line x1={0} x2={drawn.width} y1={soilY} y2={soilY} stroke="var(--soil)" strokeWidth={2} />
         <g aria-hidden="true" transform={`translate(${target.x} ${target.y - NODE_H / 2})`}>
           <path d="M0 0 V-14" stroke="var(--leaf)" strokeWidth={2.4} strokeLinecap="round" />
           <path d="M0 -9 C-3 -18 -12 -21 -20 -18 C-18 -10 -9 -6 0 -9 Z" fill="var(--leaf)" />

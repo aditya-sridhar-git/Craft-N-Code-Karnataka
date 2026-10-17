@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { atomCounts, molarMass, parseFormula, totalAtoms } from "@/lib/questions/generators/chemistry";
+import { plainMath } from "@/lib/plain";
 import { dec, simplify, texFrac } from "@/lib/questions/fmt";
 import { createRng } from "@/lib/questions/rng";
 
@@ -43,6 +44,17 @@ describe("formatting", () => {
     expect(dec(0.1 + 0.2)).toBe("0.3");
     expect(dec(3 * 0.02, 4)).toBe("0.06");
     expect(dec(-0.0001)).toBe("0");
+  });
+});
+
+describe("plain-text maths for accessible names", () => {
+  it("reads common LaTeX aloud sensibly", () => {
+    expect(plainMath("$\\frac{3}{5}$")).toBe("3/5");
+    expect(plainMath("$x = \\frac{v - u}{t}$")).toBe("x = (v - u)/t");
+    expect(plainMath("$20\\sqrt{3}$ m")).toBe("20√3 m");
+    expect(plainMath("$\\sin 30^\\circ$")).toBe("sin 30°");
+    expect(plainMath("$\\mathrm{H_2SO_4}$")).toBe("H2SO4");
+    expect(plainMath("₹20")).toBe("₹20");
   });
 });
 

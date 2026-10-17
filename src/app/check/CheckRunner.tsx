@@ -62,6 +62,12 @@ export function CheckRunner() {
       });
   }, [next, problem, finish]);
 
+  // Each new question starts at the top, so the progress bar and the trail stay in view.
+  const pendingId = session?.pending?.question.id;
+  useEffect(() => {
+    if (pendingId && window.scrollY > 0) window.scrollTo({ top: 0 });
+  }, [pendingId]);
+
   const onAnswer = useCallback((choice: number | null) => {
     const s = sessionStore.get();
     if (s?.pending) sessionStore.set(answer(s, choice));
