@@ -74,6 +74,35 @@ const isKnown = (s: NodeStatus) => s === "mastered" || s === "inferred-mastered"
 
 export const DEFAULT_BUDGET = 20;
 
+/**
+ * Per-skill decision: a sequential probability ratio test (Wald, 1945). Each answer adds the log of
+ * how much likelier it is if the student knows the skill than if they don't. Assumed answer model:
+ * knows → correct 90%, wrong option 10%, "not sure" 2%; doesn't know → "not sure" 40%, otherwise a
+ * guess among 4 options (correct 15%, wrong 45%). Decide once the odds pass about 20:1, after 2–4 answers.
+ */
+export const EVIDENCE = {
+  correct: Math.log(0.9 / 0.15),
+  wrong: Math.log(0.1 / 0.45),
+  unsure: Math.log(0.02 / 0.4),
+};
+const DECIDE_AT = 3; // log-odds ≈ 20:1
+const MIN_PER_SKILL = 2;
+const MAX_PER_SKILL = 4;
+
+export function evidence(answers: readonly Pick<AnswerInput, "correct" | "unsure">[]): number {
+  return answers.reduce((s, a) => s + (a.correct ? EVIDENCE.correct : a.unsure ? EVIDENCE.unsure : EVIDENCE.wrong), 0);
+}
+
+/** "mastered", "gap", or null when another question is needed. */
+export function verdict(answers: readonly Pick<AnswerInput, "correct" | "unsure">[]): "mastered" | "gap" | null {
+  if (answers.length < MIN_PER_SKILL) return null;
+  const e = evidence(answers);
+  if (e >= DECIDE_AT) return "mastered";
+  if (e <= -DECIDE_AT) return "gap";
+  if (answers.length >= MAX_PER_SKILL) return e >= 0 ? "mastered" : "gap";
+  return null;
+}
+
 export class Diagnoser {
   readonly index: GraphIndex;
 
@@ -123,19 +152,13 @@ export class Diagnoser {
     if (!id) throw new Error("No skill is being tested");
     const answers = [...state.answers, { ...answer, skillId: id }];
     const mine = answers.filter((a) => a.skillId === id);
-    const correct = mine.filter((a) => a.correct).length;
-    const n = mine.length;
+    const decided = verdict(mine);
 
-    let verdict: "mastered" | "gap" | null = null;
-    if (n === 2 && correct === 2) verdict = "mastered";
-    else if (n === 2 && correct === 0) verdict = "gap";
-    else if (n >= 3) verdict = correct >= 2 ? "mastered" : "gap";
+    if (!decided) return { ...state, answers, why: { kind: "repeat", tiebreak: mine.length >= MIN_PER_SKILL } };
 
-    if (!verdict) return { ...state, answers, why: { kind: "repeat", tiebreak: n === 2 } };
-
-    const status = { ...state.status, [id]: verdict };
+    const status = { ...state.status, [id]: decided };
     if (state.policy !== "exhaustive") {
-      if (verdict === "mastered") {
+      if (decided === "mastered") {
         for (const p of this.index.below[id]) if (status[p] === "untested") status[p] = "inferred-mastered";
       } else {
         for (const d of this.index.above[id]) if (status[d] === "untested") status[d] = "inferred-gap";

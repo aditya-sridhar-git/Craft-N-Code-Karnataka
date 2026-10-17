@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SKILLS } from "@/data/skills";
 import { FEATURED } from "@/data/topics";
-import { DEFAULT_BUDGET, Diagnoser, type PolicyName } from "@/lib/engine/diagnose";
+import { DEFAULT_BUDGET, Diagnoser, verdict, type PolicyName } from "@/lib/engine/diagnose";
 import { buildSubgraph } from "@/lib/engine/graph";
 import { runDiagnosis } from "@/lib/engine/simulate";
 import { createRng } from "@/lib/questions/rng";
@@ -83,14 +83,30 @@ describe("engine mechanics", () => {
     }
   });
 
-  it("uses a third question to break a 1–1 tie", () => {
+  it("keeps asking after mixed answers until the evidence is clear", () => {
     let state = d.next(d.init()).state;
     state = d.record(state, { questionId: "a", correct: true, unsure: false, misconceptionId: null });
     state = d.record(state, { questionId: "b", correct: false, unsure: false, misconceptionId: null });
     expect(state.current).toBe("quadratics");
     expect(state.why).toEqual({ kind: "repeat", tiebreak: true });
     state = d.record(state, { questionId: "c", correct: true, unsure: false, misconceptionId: null });
+    expect(state.current).toBe("quadratics");
+    state = d.record(state, { questionId: "d", correct: true, unsure: false, misconceptionId: null });
     expect(state.status.quadratics).toBe("mastered");
+  });
+
+  it("decides each skill with a sequential evidence test", () => {
+    const C = { correct: true, unsure: false };
+    const W = { correct: false, unsure: false };
+    const U = { correct: false, unsure: true };
+    expect(verdict([C])).toBeNull(); // never decides on one answer
+    expect(verdict([C, C])).toBe("mastered");
+    expect(verdict([W, W])).toBe("gap");
+    expect(verdict([U, W])).toBe("gap");
+    expect(verdict([C, U])).toBeNull();
+    expect(verdict([C, W, C])).toBeNull();
+    expect(verdict([C, W, W, W])).toBe("gap"); // stops at 4 and goes with the evidence
+    expect(verdict([C, U, C, C])).toBe("mastered");
   });
 
   it("infers everything underneath a skill the student has mastered", () => {
