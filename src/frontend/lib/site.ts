@@ -3,7 +3,7 @@ export const SITE = {
   tagline: "Find the real reason you're stuck.",
   description:
     "Taproot traces the topic you're stuck on down its tree of prerequisite skills to find the root gap, explains it, and helps you climb back up. Free, no sign-up.",
-  repo: "https://github.com/akshayavinash2006/taproot",
+  repo: "https://github.com/aditya-sridhar-git/Craft-N-Code-Karnataka",
 };
 
 /** Prefilled GitHub issue for reporting a wrong or confusing question. */

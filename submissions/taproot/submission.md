@@ -13,10 +13,10 @@ Taproot is a five-minute check-up for maths and science. A student names the cha
 
 ## Links
 
-- Code repository: https://github.com/akshayavinash2006/taproot
+- Code repository: https://github.com/aditya-sridhar-git/Craft-N-Code-Karnataka
 - Demo video: [paste link: YouTube or Google Drive, 5:00 max]
 - Slides: [paste link: Google Slides, 8 slides max]
-- Deployed URL (optional): [paste Vercel URL after deploying]
+- Deployed URL (optional): https://craft-n-code-karnataka.vercel.app
 
 ## Short answers
 

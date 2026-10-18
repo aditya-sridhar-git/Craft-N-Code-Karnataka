@@ -6,7 +6,7 @@ Built for **Craft N Code Karnataka 2026** (theme: AI for Education).
 
 | | |
 |---|---|
-| **Live app** | _added at deployment_ |
+| **Live app** | https://craft-n-code-karnataka.vercel.app |
 | **Demo video** | _added at submission_ |
 | **Slides** | _added at submission_ |
 
@@ -161,8 +161,8 @@ The data was drafted with AI assistance (see below) and checked by automated tes
 You need **Node.js 22+**.
 
 ```bash
-git clone https://github.com/akshayavinash2006/taproot.git
-cd taproot
+git clone https://github.com/aditya-sridhar-git/Craft-N-Code-Karnataka.git
+cd Craft-N-Code-Karnataka
 npm install
 cp .env.example .env.local     # then add your free key from https://console.groq.com/keys
 npm run dev                    # http://localhost:3000
