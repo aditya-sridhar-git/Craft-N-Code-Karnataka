@@ -7,7 +7,7 @@ Built for **Craft N Code Karnataka 2026** (theme: AI for Education).
 | | |
 |---|---|
 | **Live app** | https://craft-n-code-karnataka.vercel.app |
-| **Demo video** | _added at submission_ |
+| **Demo video** | https://www.loom.com/share/88b47eacedda4d409c43ec3e7e3a7cf2 |
 | **Slides** | https://docs.google.com/presentation/d/1dgT34fZITDH-ZTu4iQCsQ1K7YCqjaiZ5/edit?usp=sharing |
 
 ![A student stuck on projectile motion is traced back to trigonometric ratios](docs/screenshots/04-report.png)

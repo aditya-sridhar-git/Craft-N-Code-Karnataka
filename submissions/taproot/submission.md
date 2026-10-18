@@ -14,7 +14,7 @@ Taproot is a five-minute check-up for maths and science. A student names the cha
 ## Links
 
 - Code repository: https://github.com/aditya-sridhar-git/Craft-N-Code-Karnataka
-- Demo video: [paste link: YouTube or Google Drive, 5:00 max]
+- Demo video: https://www.loom.com/share/88b47eacedda4d409c43ec3e7e3a7cf2
 - Slides: https://docs.google.com/presentation/d/1dgT34fZITDH-ZTu4iQCsQ1K7YCqjaiZ5/edit?usp=sharing
 - Deployed URL (optional): https://craft-n-code-karnataka.vercel.app
 
