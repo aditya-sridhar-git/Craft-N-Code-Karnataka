@@ -181,6 +181,8 @@ Without a `GROQ_API_KEY`, the five featured chapters still work end to end with 
 
 **Deploy to Vercel:** the repository includes a `vercel.json`, so no settings need changing.
 
+![Taproot's production deployment on Vercel, built from the main branch and live at craft-n-code-karnataka.vercel.app](docs/screenshots/13-vercel-deployment.png)
+
 1. Import the repository on [vercel.com/new](https://vercel.com/new). The framework (Next.js) is detected automatically.
 2. Under *Environment Variables*, add `GROQ_API_KEY` for Production and Preview. Never commit the key: `.env*` files are git-ignored.
 3. For teacher accounts and classes, open the project's *Storage* tab → *Create Database* → **Neon** (Postgres, free plan), and connect it to the project. This sets `DATABASE_URL` automatically. The tables are created on first use, so there's no migration step.
