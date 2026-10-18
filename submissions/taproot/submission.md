@@ -4,8 +4,8 @@
 
 - Team name: Taproot
 - Project name: Taproot: find the real reason you're stuck
-- College: [fill in your college]
-- Team members: [fill in team member names]
+- College: RV College of Engineering
+- Team members: Aditya Sridhar, Akshay Avinash, Aaryan Sanjay Ganvkar, Aniket Kiran Hegde
 
 ## Project summary
 
