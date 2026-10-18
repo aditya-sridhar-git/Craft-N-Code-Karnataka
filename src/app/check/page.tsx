@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CheckRunner } from "./CheckRunner";
+import { CheckRunner } from "@/frontend/features/check/CheckRunner";
 
 export const metadata: Metadata = { title: "Check-up" };
 

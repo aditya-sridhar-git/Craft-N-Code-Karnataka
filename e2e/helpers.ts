@@ -42,7 +42,10 @@ export async function answerAsStudentWithGap(page: Page, gap: string | null) {
 
 export async function expectNoSeriousA11yIssues(page: Page) {
   // Let entrance animations finish: mid-fade opacity would distort the contrast check.
-  await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"));
+  // Scroll-linked animations (they follow the scroll position, not time) never "finish", so skip them.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((a) => !(a.timeline instanceof DocumentTimeline) || a.playState !== "running"),
+  );
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   const serious = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
   expect(serious.map((v) => ({ id: v.id, help: v.help, targets: v.nodes.slice(0, 3).map((n) => n.target.join(" ")) }))).toEqual([]);

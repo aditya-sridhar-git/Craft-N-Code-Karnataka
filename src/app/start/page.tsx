@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { StartForm } from "./StartForm";
+import { StartForm } from "@/frontend/features/start/StartForm";
 
 export const metadata: Metadata = { title: "Start a check-up" };
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HistoryList } from "./HistoryList";
+import { HistoryList } from "@/frontend/features/history/HistoryList";
 
 export const metadata: Metadata = { title: "My checks" };
 

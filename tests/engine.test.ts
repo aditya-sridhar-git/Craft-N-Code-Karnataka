@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { SKILLS } from "@/data/skills";
-import { FEATURED } from "@/data/topics";
-import { DEFAULT_BUDGET, Diagnoser, verdict, type PolicyName } from "@/lib/engine/diagnose";
-import { buildSubgraph } from "@/lib/engine/graph";
-import { runDiagnosis } from "@/lib/engine/simulate";
-import { createRng } from "@/lib/questions/rng";
+import { SKILLS } from "@/shared/data/skills";
+import { FEATURED } from "@/shared/data/topics";
+import { DEFAULT_BUDGET, Diagnoser, verdict, type PolicyName } from "@/shared/engine/diagnose";
+import { buildSubgraph } from "@/shared/engine/graph";
+import { runDiagnosis } from "@/shared/engine/simulate";
+import { createRng } from "@/shared/questions/rng";
 
 /** Knows every skill not affected by `gaps`; says "I'm not sure" to everything else. No noise. */
 const exact = (...gaps: string[]) => ({ gaps: new Set(gaps), slip: 0, unsure: 1 });

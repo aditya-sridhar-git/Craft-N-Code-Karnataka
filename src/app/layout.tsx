@@ -2,9 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible_Next, Fraunces } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
-import { Footer, Header } from "@/components/SiteChrome";
-import { PREFS_SCRIPT } from "@/lib/prefs";
-import { SITE } from "@/lib/site";
+import { ChromeGate } from "@/frontend/components/ChromeGate";
+import { Footer, Header } from "@/frontend/components/SiteChrome";
+import { PREFS_SCRIPT } from "@/frontend/lib/prefs";
+import { SITE } from "@/frontend/lib/site";
 
 // Atkinson Hyperlegible was designed by the Braille Institute for readers with low vision.
 const body = Atkinson_Hyperlegible_Next({ subsets: ["latin"], variable: "--font-body", display: "swap" });
@@ -36,11 +37,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <Header />
+        <ChromeGate>
+          <Header />
+        </ChromeGate>
         <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-4 pt-6 sm:pt-10">
           {children}
         </main>
-        <Footer />
+        <ChromeGate>
+          <Footer />
+        </ChromeGate>
       </body>
     </html>
   );

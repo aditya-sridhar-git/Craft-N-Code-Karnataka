@@ -50,7 +50,7 @@ test("keyboard: 1–4 answer and N means not sure", async ({ page, isMobile }) =
   await expect(page.getByText("Question 3")).toBeVisible();
 });
 
-for (const path of ["/", "/start", "/about", "/history"]) {
+for (const path of ["/", "/start", "/about", "/history", "/login", "/login/teacher", "/login/student"]) {
   test(`no serious accessibility issues on ${path}`, async ({ page }) => {
     await page.goto(path);
     await expectNoSeriousA11yIssues(page);

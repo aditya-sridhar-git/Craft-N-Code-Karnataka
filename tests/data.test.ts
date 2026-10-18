@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { BANK } from "@/data/bank";
-import { SKILLS, SKILL_LIST } from "@/data/skills";
-import { FEATURED } from "@/data/topics";
-import { buildSubgraph, findCycle } from "@/lib/engine/graph";
-import { drawQuestion, GENERATORS } from "@/lib/questions";
-import { createRng } from "@/lib/questions/rng";
+import { BANK } from "@/shared/data/bank";
+import { SKILLS, SKILL_LIST } from "@/shared/data/skills";
+import { FEATURED } from "@/shared/data/topics";
+import { buildSubgraph, findCycle } from "@/shared/engine/graph";
+import { drawQuestion, GENERATORS } from "@/shared/questions";
+import { createRng } from "@/shared/questions/rng";
 
 describe("skill graph", () => {
   it("has unique ids", () => {

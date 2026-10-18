@@ -1,10 +1,10 @@
 import katex from "katex";
 import { describe, expect, it } from "vitest";
-import { BANK } from "@/data/bank";
-import { SKILL_LIST } from "@/data/skills";
-import { bankQuestion, GENERATORS } from "@/lib/questions";
-import { buildMcq, DegenerateQuestion } from "@/lib/questions/mcq";
-import { createRng } from "@/lib/questions/rng";
+import { BANK } from "@/shared/data/bank";
+import { SKILL_LIST } from "@/shared/data/skills";
+import { bankQuestion, GENERATORS } from "@/shared/questions";
+import { buildMcq, DegenerateQuestion } from "@/shared/questions/mcq";
+import { createRng } from "@/shared/questions/rng";
 
 const SEEDS = 400;
 

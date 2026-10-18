@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ReportLoader } from "./ReportLoader";
+import { ReportLoader } from "@/frontend/features/report/ReportLoader";
 
 export const metadata: Metadata = { title: "Your report" };
 

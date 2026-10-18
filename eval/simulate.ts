@@ -8,12 +8,12 @@
  *   npm run eval:sim -- --students 500
  */
 import { mkdirSync, writeFileSync } from "node:fs";
-import { SKILLS } from "../src/data/skills";
-import { FEATURED } from "../src/data/topics";
-import { Diagnoser, DEFAULT_BUDGET, type PolicyName } from "../src/lib/engine/diagnose";
-import { buildSubgraph } from "../src/lib/engine/graph";
-import { knows, runDiagnosis, trueRoots, type SimStudent } from "../src/lib/engine/simulate";
-import { createRng, type Rng } from "../src/lib/questions/rng";
+import { SKILLS } from "../src/shared/data/skills";
+import { FEATURED } from "../src/shared/data/topics";
+import { Diagnoser, DEFAULT_BUDGET, type PolicyName } from "../src/shared/engine/diagnose";
+import { buildSubgraph } from "../src/shared/engine/graph";
+import { knows, runDiagnosis, trueRoots, type SimStudent } from "../src/shared/engine/simulate";
+import { createRng, type Rng } from "../src/shared/questions/rng";
 
 const arg = (name: string, fallback: number) => {
   const i = process.argv.indexOf(`--${name}`);

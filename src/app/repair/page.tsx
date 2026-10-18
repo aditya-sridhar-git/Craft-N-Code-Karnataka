@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { RepairFlow } from "./RepairFlow";
+import { RepairFlow } from "@/frontend/features/repair/RepairFlow";
 
 export const metadata: Metadata = { title: "Repair and climb" };
 

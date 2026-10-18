@@ -21,6 +21,13 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // The earlier class pages moved behind teacher sign-in.
+  async redirects() {
+    return [
+      { source: "/class", destination: "/login/teacher", permanent: false },
+      { source: "/class/dashboard", destination: "/teacher", permanent: false },
+    ];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

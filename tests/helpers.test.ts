@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { atomCounts, molarMass, parseFormula, totalAtoms } from "@/lib/questions/generators/chemistry";
-import { fixLatex, stripLead, stripNumbering } from "@/lib/ai/clean";
-import { plainMath } from "@/lib/plain";
-import { dec, simplify, texFrac } from "@/lib/questions/fmt";
-import { createRng } from "@/lib/questions/rng";
+import { atomCounts, molarMass, parseFormula, totalAtoms } from "@/shared/questions/generators/chemistry";
+import { fixLatex, stripLead, stripNumbering } from "@/backend/ai/clean";
+import { plainMath } from "@/shared/plain";
+import { dec, simplify, texFrac } from "@/shared/questions/fmt";
+import { createRng } from "@/shared/questions/rng";
 
 describe("chemical formula parser", () => {
   it("counts atoms through brackets", () => {
@@ -71,6 +71,13 @@ describe("repairing LaTeX from AI output", () => {
     expect(fixLatex("The AP 2, 5, 8, \\dots")).toBe("The AP 2, 5, 8, …");
     expect(fixLatex("Use 3 \\times 4 here, and $\\times$ there")).toBe("Use 3 × 4 here, and $\\times$ there");
   });
+  it("wraps LaTeX the model wrote without $ signs, keeping punctuation outside", () => {
+    expect(fixLatex("in the ratio 1 : \\sqrt{3} : 2")).toBe("in the ratio 1 : $\\sqrt{3}$ : 2");
+    expect(fixLatex("So \\sin 30° = 1/2, \\cos 30° = \\sqrt{3}/2, and")).toBe("So $\\sin$ 30° = 1/2, $\\cos$ 30° = $\\sqrt{3}/2$, and");
+    expect(fixLatex("(that is, \\frac{1}{2})")).toBe("(that is, $\\frac{1}{2}$)");
+    expect(fixLatex("Already fine: $\\sqrt{2}$.")).toBe("Already fine: $\\sqrt{2}$.");
+  });
+
   it("tidies numbered steps and repeated labels", () => {
     expect(stripNumbering("1. Identify a")).toBe("Identify a");
     expect(stripNumbering("Step 2: Use the formula")).toBe("Use the formula");
