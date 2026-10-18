@@ -2,8 +2,8 @@
 
 ## Team
 
-- Team name: Taproot
-- Project name: Taproot: find the real reason you're stuck
+- Team name: Neural Notes
+- Project name: Taproot
 - College: RV College of Engineering
 - Team members: Aditya Sridhar, Akshay Avinash, Aaryan Sanjay Ganvkar, Aniket Kiran Hegde
 
